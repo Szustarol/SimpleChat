@@ -37,7 +37,6 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv){
 	gtk_container_add(GTK_CONTAINER(mainAreaWindow), mainAreaFrame);
 	gtk_container_add(GTK_CONTAINER(mainAreaFrame), mainArea);
 
-
 	gtk_container_set_border_width(GTK_CONTAINER(inputAreaBox), GTK_WRAP_WORD);
 
 	gtk_container_add(GTK_CONTAINER(inputAreaFrame), inputArea);

@@ -9,8 +9,11 @@ simplechat.run: $(BD)main.o
 $(BD)main.o: main.c $(BD)windowsetup.o
 	$(CC) $(CFLAGS) -c main.c -o $(BD)main.o
 
-$(BD)windowsetup.o: GUI/windowsetup.c
+$(BD)windowsetup.o: GUI/windowsetup.c $(BD)programdata.o
 	$(CC) $(CFLAGS) -c GUI/windowsetup.c -o $(BD)windowsetup.o
+
+$(BD)programdata.o: programdata.c
+	$(CC) $(CFLAGS) -c programdata.c -o $(BD)programdata.o
 
 clean:
 	rm simplechat.run
