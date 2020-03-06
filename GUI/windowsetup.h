@@ -6,6 +6,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * arc, char *** argv, c
 
 GtkWidget * setupNicknameDialog(GtkWidget * parent);
 
-GtkWidget * setupConnectDialog();
+GtkWidget * setupConnectDialog(GtkWidget * parent);
+
 
 #endif

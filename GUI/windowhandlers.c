@@ -25,11 +25,13 @@ void nicknameChangeDoneHandler(GtkWidget * widget, gint response_id, gpointer da
 }
 
 void disconnectHandler(GtkWidget * widget, gpointer data){
-
+	program_shouldDisconnect = TRUE;
 }
 
 void connectHandler(GtkWidget * widget, gpointer data){
-
+	gtk_widget_show_all(program_connectDialog);
+	gtk_dialog_run(GTK_DIALOG(program_connectDialog));
+	program_shouldDisconnect = TRUE;
 }
 
 void quitHandler(GtkWidget * widget, gpointer data){

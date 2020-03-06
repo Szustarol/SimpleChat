@@ -4,10 +4,18 @@
 
 #define bool char
 
+typedef struct{
+	GtkWidget * IP4;
+	GtkWidget * IP3;
+	GtkWidget * IP2;
+	GtkWidget * IP1;
+}program_connectionData;
+
 extern char program_nickname[64];
 extern char program_lastnickname[64];
 extern bool program_shouldSendMessage;
-extern bool program_shoulReconnect;
+extern bool program_shoulConnect;
+extern bool program_shouldDisconnect;
 extern bool program_connected;
 extern bool program_changedNickname;
 extern GtkWidget * program_statusLabel;

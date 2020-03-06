@@ -72,7 +72,8 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	if(setupDialogs != 0){
 		program_nicknameDialog = setupNicknameDialog(mainWindow);
 		g_signal_connect(G_OBJECT(nickname_item), "clicked", G_CALLBACK(nicknameChangeHandler), NULL);
-		program_connectDialog = setupConnectDialog();
+		program_connectDialog = setupConnectDialog(mainWindow);
+		g_signal_connect(G_OBJECT(connect_item), "clicked", G_CALLBACK(connectHandler), NULL);
 	}
 
 	return mainWindow;
@@ -100,6 +101,24 @@ GtkWidget * setupNicknameDialog(GtkWidget * parent){
 	return dialog;
 }
 
-GtkWidget * setupConnectDialog(){
-	return NULL;
+GtkWidget * setupConnectDialog(GtkWidget * parent){
+	GtkWidget * dialog = gtk_dialog_new_with_buttons("Connect to a server", GTK_WINDOW(parent),
+	 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+ 	 "Connect", GTK_RESPONSE_ACCEPT, "Cancel", GTK_RESPONSE_REJECT, NULL);
+
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 15);
+	GtkWidget * label = gtk_label_new("IP Address:");
+
+	static program_connectionData cdt;
+
+	cdt.IP1 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP1), "192");
+	cdt.IP2 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP2), "168");
+	cdt.IP3 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP3), "1");
+	cdt.IP4 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP4), "1");
+
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), label, TRUE, TRUE, 10);
+
+	g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+
+	return dialog;
 }
