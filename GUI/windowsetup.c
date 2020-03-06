@@ -1,6 +1,8 @@
 #include "windowsetup.h"
+#include "windowhandlers.h"
+#include "../programdata.h"
 
-GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv){
+GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, char setupDialogs){
 	gtk_init(argc, argv);
 
 	GtkWidget * mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -16,7 +18,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv){
 	gtk_container_add(GTK_CONTAINER(mainWindow), main_vbox);
 
 	GtkWidget * menubar;
-	menubar = gtk_menu_bar_new();
+	menubar = gtk_toolbar_new();
 
 	GtkWidget * inputLabel = gtk_label_new("Input message: ");
 
@@ -50,9 +52,11 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv){
 	gtk_label_set_markup(GTK_LABEL(infoLabel), "<span color='red'>Loading...</span>");
 	gtk_label_set_xalign(GTK_LABEL(infoLabel), 0.1);
 
+	program_statusLabel = infoLabel;
+
 	for(unsigned i = 0; i < sizeof(menu_names)/sizeof(menu_names[0]); i++){
-		*menu_items[i] = gtk_menu_item_new_with_label(menu_names[i]);
-		gtk_menu_shell_append(GTK_MENU_SHELL(menubar), *menu_items[i]);
+		*menu_items[i] = GTK_WIDGET(gtk_tool_button_new(NULL, menu_names[i]));
+		gtk_toolbar_insert(GTK_TOOLBAR(menubar), GTK_TOOL_ITEM(*menu_items[i]), -1);
 	}
 
 	gtk_widget_set_sensitive(disconnect_item, FALSE);
@@ -63,5 +67,39 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv){
 	gtk_box_pack_end(GTK_BOX(main_vbox), infoLabel, FALSE, FALSE, 12);
 	gtk_widget_show_all(mainWindow);
 
+	g_signal_connect(G_OBJECT(quit_item), "clicked", G_CALLBACK(quitHandler), NULL);
+
+	if(setupDialogs != 0){
+		program_nicknameDialog = setupNicknameDialog(mainWindow);
+		g_signal_connect(G_OBJECT(nickname_item), "clicked", G_CALLBACK(nicknameChangeHandler), NULL);
+		program_connectDialog = setupConnectDialog();
+	}
+
 	return mainWindow;
+}
+
+
+GtkWidget * setupNicknameDialog(GtkWidget * parent){
+	GtkWidget * dialog = gtk_dialog_new_with_buttons("Change nickname", GTK_WINDOW(parent),
+	 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+ 	 "OK", GTK_RESPONSE_ACCEPT, "Cancel", GTK_RESPONSE_REJECT, NULL);
+
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 15);
+
+	GtkWidget * label = gtk_label_new("Change nickname:");
+	GtkWidget * nickname;
+	nickname  = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(nickname), program_nickname);
+	gtk_entry_set_max_length(GTK_ENTRY(nickname), 63);
+//	gtk_widget_set_margin_start(label, 10);
+//	gtk_widget_set_margin_end(label, 10);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), label, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), nickname, TRUE, TRUE, 10);
+	g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(nicknameChangeDoneHandler), nickname);
+	return dialog;
+}
+
+GtkWidget * setupConnectDialog(){
+	return NULL;
 }
