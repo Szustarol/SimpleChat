@@ -8,5 +8,4 @@ GtkWidget * setupNicknameDialog(GtkWidget * parent);
 
 GtkWidget * setupConnectDialog(GtkWidget * parent);
 
-
 #endif

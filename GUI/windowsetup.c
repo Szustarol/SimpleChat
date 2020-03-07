@@ -7,7 +7,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 
 	GtkWidget * mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 400, 200);
+	gtk_widget_set_size_request(GTK_WIDGET(mainWindow), 500, 300);
 
 	g_signal_connect(mainWindow, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -22,7 +22,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 
 	GtkWidget * inputLabel = gtk_label_new("Input message: ");
 
-	GtkWidget * quit_item, *nickname_item, *connect_item, *disconnect_item;
+	GtkWidget * quit_item, *nickname_item, *connect_item, *disconnect_item, *host_item;
 
 	GtkWidget * mainArea = gtk_text_view_new();
 	GtkWidget * mainAreaFrame = gtk_frame_new(NULL);
@@ -45,8 +45,8 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	gtk_box_pack_start(GTK_BOX(inputAreaBox), inputLabel, FALSE, FALSE, 20);
 	gtk_box_pack_start(GTK_BOX(inputAreaBox), inputAreaFrame, TRUE, TRUE, 20);
 
-	GtkWidget ** menu_items []= {&quit_item, &nickname_item, &connect_item, &disconnect_item};
-	char * menu_names []= {"Quit", "Nickname", "Connect", "Disconnect"};
+	GtkWidget ** menu_items []= {&quit_item, &nickname_item, &connect_item, &disconnect_item, &host_item};
+	char * menu_names []= {"Quit", "Nickname", "Connect", "Disconnect", "Host a server"};
 
 	GtkWidget * infoLabel = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(infoLabel), "<span color='red'>Loading...</span>");
@@ -107,18 +107,40 @@ GtkWidget * setupConnectDialog(GtkWidget * parent){
  	 "Connect", GTK_RESPONSE_ACCEPT, "Cancel", GTK_RESPONSE_REJECT, NULL);
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 15);
+
 	GtkWidget * label = gtk_label_new("IP Address:");
+	GtkWidget * dotLabels[3];
+	GtkWidget * addressBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	for(unsigned i = 0; i < 3; i++){
+		dotLabels[i] = gtk_label_new(".");
+	}
+
+	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 
 	static program_connectionData cdt;
-
-	cdt.IP1 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP1), "192");
-	cdt.IP2 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP2), "168");
-	cdt.IP3 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP3), "1");
-	cdt.IP4 = gtk_entry_new(); gtk_entry_set_text(GTK_ENTRY(cdt.IP4), "1");
-
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), label, TRUE, TRUE, 10);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))), addressBox, TRUE, TRUE, 10);
+
+	GtkWidget ** IPS []= {&cdt.IP1, &cdt.IP2, &cdt.IP3, &cdt.IP4};
+	const char * addrs[]= {"192", "168", "1", "1"};
+
+	for(unsigned i = 0; i < 7; i++){
+		if(i % 2 == 0){
+			*IPS[i/2] = gtk_entry_new();
+			gtk_entry_set_text(GTK_ENTRY(*IPS[i/2]), addrs[i/2]);
+			gtk_box_pack_start(GTK_BOX(addressBox), *IPS[i/2], TRUE, TRUE, 5);
+			gtk_entry_set_max_length(GTK_ENTRY(*IPS[i/2]), 3);
+			gtk_entry_set_max_width_chars(GTK_ENTRY(*IPS[i/2]), 4);
+			gtk_entry_set_width_chars(GTK_ENTRY(*IPS[i/2]), 4);
+			g_signal_connect(G_OBJECT(*IPS[i/2]), "insert_text", G_CALLBACK(numberOnlyInsertionHandler), NULL);
+		}
+		else{
+			gtk_box_pack_start(GTK_BOX(addressBox), dotLabels[i/2], TRUE, TRUE, 0);
+		}
+	}
 
 	g_signal_connect(G_OBJECT(dialog), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(connectionDoneHandler), &cdt);
 
 	return dialog;
 }
