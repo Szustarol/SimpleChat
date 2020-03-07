@@ -7,9 +7,12 @@ char program_nickname[64] = "User";
 bool program_shouldSendMessage = FALSE;
 bool program_connected = FALSE;
 bool program_shouldConnect = FALSE;
-bool program_changedNickname = FALSE;
+bool program_changedNickname = TRUE;
 bool program_shouldDisconnect = FALSE;
-bool program_shouldHost = TRUE;
+bool program_shouldHost = FALSE;
+bool program_shouldHalt = FALSE;
+
+int program_clientLoopIdentifier;
 
 GtkWidget * program_nicknameDialog;
 GtkWidget * program_connectDialog;

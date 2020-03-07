@@ -68,6 +68,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	gtk_widget_show_all(mainWindow);
 
 	g_signal_connect(G_OBJECT(quit_item), "clicked", G_CALLBACK(quitHandler), NULL);
+	g_signal_connect(G_OBJECT(mainWindow), "destroy", G_CALLBACK(quitHandler), NULL);
 
 	if(setupDialogs != 0){
 		program_nicknameDialog = setupNicknameDialog(mainWindow);

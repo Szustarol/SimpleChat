@@ -18,6 +18,7 @@ typedef struct{
 	uint8_t IP1;
 }address_package;
 
+extern int	program_clientLoopIdentifier;
 extern address_package program_connection;
 extern char program_nickname[64];
 extern char program_lastnickname[64];
@@ -25,6 +26,7 @@ extern bool program_shouldSendMessage;
 extern bool program_shouldConnect;
 extern bool program_shouldDisconnect;
 extern bool program_shouldHost;
+extern bool program_shouldHalt;
 extern bool program_connected;
 extern bool program_changedNickname;
 extern GtkWidget * program_statusLabel;

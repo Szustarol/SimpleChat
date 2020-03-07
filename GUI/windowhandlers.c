@@ -59,12 +59,12 @@ void disconnectHandler(GtkWidget * widget, gpointer data){
 void connectHandler(GtkWidget * widget, gpointer data){
 	if(program_shouldDisconnect != TRUE){
 		gtk_widget_show_all(program_connectDialog);
-		gtk_dialog_run(GTK_DIALOG(program_connectDialog));	
+		gtk_dialog_run(GTK_DIALOG(program_connectDialog));
 	}
 }
 
 void quitHandler(GtkWidget * widget, gpointer data){
-	gtk_main_quit();
+	program_shouldHalt = TRUE;
 }
 
 void numberOnlyInsertionHandler(GtkEntry * widget, const gchar * text, gint length, gint * position, gpointer data){
