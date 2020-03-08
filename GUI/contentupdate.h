@@ -4,5 +4,6 @@
 #include <gtk/gtk.h>
 
 void updateStatusLabel(char connected);
+void setConnected(char connected);
 
 #endif

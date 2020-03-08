@@ -77,6 +77,11 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 		g_signal_connect(G_OBJECT(connect_item), "clicked", G_CALLBACK(connectHandler), NULL);
 	}
 
+	program_connectItem = connect_item;
+	program_hostItem = host_item;
+	program_disconnectItem = disconnect_item;
+	g_signal_connect(G_OBJECT(host_item), "clicked", G_CALLBACK(hostHandler), NULL);
+	g_signal_connect(G_OBJECT(disconnect_item), "clicked", G_CALLBACK(disconnectHandler), NULL);
 	return mainWindow;
 }
 

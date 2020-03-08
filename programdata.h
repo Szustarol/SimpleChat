@@ -1,7 +1,8 @@
 #ifndef PROGRAMDATA_H
 #define PROGRAMDATA_H
 #include <gtk/gtk.h>
-
+#include <sys/types.h>
+#include <unistd.h>
 #define bool char
 
 typedef struct{
@@ -18,6 +19,12 @@ typedef struct{
 	uint8_t IP1;
 }address_package;
 
+extern pid_t program_childPID;
+extern bool program_isServer;
+extern bool program_isHosting;
+extern GtkWidget * program_connectItem;
+extern GtkWidget * program_disconnectItem;
+extern GtkWidget * program_hostItem;
 extern int	program_clientLoopIdentifier;
 extern address_package program_connection;
 extern char program_nickname[64];

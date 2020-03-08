@@ -5,8 +5,15 @@
 #include "CLIENT/clientloop.h"
 
 int main(int argc, char *argv[]) {
-	setupMainWindow("SimpleChat", &argc, &argv, 1);
-	program_clientLoopIdentifier = g_timeout_add(0, client_clientLoop, NULL);
-	gtk_main();
+	program_childPID = fork();
+	if(program_childPID){
+		server_serverLoop();
+	}
+	else{
+		setupMainWindow("SimpleChat", &argc, &argv, 1);
+		program_clientLoopIdentifier = g_timeout_add(0, client_clientLoop, NULL);
+		gtk_main();
+	}
+
 	return 0;
 }
