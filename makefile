@@ -6,11 +6,15 @@ BD=build/
 simplechat.run: $(BD)main.o
 	$(CC) $(CFLAGS) $(BD)*.o -o simplechat.run $(CLIBS)
 
-$(BD)main.o: main.c $(BD)windowsetup.o $(BD)serverloop.o $(BD)clientloop.o $(BD)programdata.o
+
+$(BD)main.o: main.c $(BD)windowsetup.o $(BD)serverloop.o $(BD)clientloop.o $(BD)programdata.o $(BD)communicate.o
 	$(CC) $(CFLAGS) -c main.c -o $(BD)main.o
 
-$(BD)serverloop.o: SERVER/serverloop.c $(BD)programdata.o
+$(BD)serverloop.o: SERVER/serverloop.c $(BD)programdata.o 
 	$(CC) $(CFLAGS) -c SERVER/serverloop.c -o $(BD)serverloop.o
+
+$(BD)communicate.o: communicate.c $(BD)programdata.o $(BD)serverloop.o
+	$(CC) $(CFLAGS) -c communicate.c -o $(BD)communicate.o
 
 $(BD)clientloop.o: CLIENT/clientloop.c $(BD)programdata.o $(BD)contentupdate.o
 	$(CC) $(CFLAGS) -c CLIENT/clientloop.c -o $(BD)clientloop.o

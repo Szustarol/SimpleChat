@@ -3,18 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/select.h>
 
 pthread_mutex_t clientsmutex = PTHREAD_MUTEX_INITIALIZER;
 
 char server_shouldQuit = 0;
 char server_shouldHost = 0;
 char server_initialised = 0;
+char server_shouldTerminate = 0;
 int _Atomic server_clientCount = 0;
 char _Atomic terminate_clients = 0;
 int server_connfd = -1;
 int server_listenfd = -1;
 struct sockaddr_in server_addr;
 struct sockaddr_in incoming_addr;
+struct timeval server_wait = {.tv_sec = 0, .tv_usec = 400};
+fd_set server_descset;
 
 void server_serverInit(){
 	memset(clients, 0x0, sizeof(client_addr*)*MAX_CONNECTIONS);
@@ -74,9 +78,19 @@ void * server_parseClient(void * clientStruct){
 }
 
 void server_serverLoop(){
-	while(server_shouldQuit == 0){
-		if(server_initialised){
-			for(;;){
+	while(server_shouldTerminate == 0){
+		if(server_shouldHost){
+			server_shouldHost = 0;
+			server_serverInit();
+			server_initialised = 1;
+		}
+		if(server_initialised && !server_shouldQuit){
+			FD_ZERO(&server_descset);
+			FD_SET(server_listenfd, &server_descset);
+
+			int r = select(server_listenfd + 1, &server_descset, NULL, NULL, &server_wait);
+
+			if(r > 0){
 				socklen_t client_len = sizeof(incoming_addr);
 
 				server_connfd = accept(server_listenfd, (struct sockaddr*)&incoming_addr, &client_len);
@@ -88,7 +102,7 @@ void server_serverLoop(){
 				client_addr * c = (client_addr*)malloc(sizeof(client_addr));
 				c->addr = incoming_addr;
 				c->connfd = server_connfd;
-				
+					
 				for(int i = 0; i < MAX_CONNECTIONS; i++){
 					if(clients[i] == 0x0){
 						clients[i] = c;
@@ -101,8 +115,13 @@ void server_serverLoop(){
 				server_clientCount++;
 				pthread_create(&threadid, NULL, &server_parseClient, (void*)c);
 			}
-			close(server_listenfd);
 		}
+
+		if(server_initialised && server_shouldQuit){
+			close(server_listenfd);
+			server_serverCleanup();
+		}
+
 	}
 }
 
