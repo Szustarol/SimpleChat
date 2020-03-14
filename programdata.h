@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdint.h>
 #define bool char
 
 typedef struct{
@@ -18,6 +19,8 @@ typedef struct{
 	uint8_t IP2;
 	uint8_t IP1;
 }address_package;
+
+static const int MSG_MAXLEN = 512;
 
 extern pid_t program_childPID;
 extern bool program_isServer;
