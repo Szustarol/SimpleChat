@@ -2,16 +2,12 @@
 #include "SERVER/serverloop.h"
 
 void server_incomingSignal(const int signal){
-    switch(message_type){
-        case SERVER_ESTABLISH:
-            server_shouldHost = 1;
-            break;
-        case SERVER_CLOSE:
-            server_shouldQuit = 1;
-            break;
-        case SERVER_DESTROY:
-            server_shouldQuit = 1;
-            server_shouldTerminate = 1;
-            break;
+    if(signal == SIGUSR1)
+        server_shouldHost = 1;
+    else if(signal == SIGUSR2)
+        server_shouldQuit = 1;
+    else if(signal == SIGTERM){
+        server_shouldQuit = 1;
+        server_shouldTerminate = 1;
     }
 }

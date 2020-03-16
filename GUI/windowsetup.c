@@ -1,5 +1,6 @@
 #include "windowsetup.h"
 #include "windowhandlers.h"
+#include "contentupdate.h"
 #include "../programdata.h"
 
 GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, char setupDialogs){
@@ -27,6 +28,8 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	GtkWidget * mainArea = gtk_text_view_new();
 	GtkWidget * mainAreaFrame = gtk_frame_new(NULL);
 	GtkWidget * mainAreaWindow = gtk_scrolled_window_new(NULL, NULL);
+
+	program_mainTextBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(mainArea));
 
 	GtkWidget * inputArea = gtk_entry_new();
 	GtkWidget * inputAreaFrame = gtk_frame_new(NULL);

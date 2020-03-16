@@ -5,5 +5,6 @@
 
 void updateStatusLabel(char connected);
 void setConnected(char connected);
+void contentAppendText(char * text);
 
 #endif

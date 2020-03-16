@@ -19,10 +19,10 @@ typedef struct{
 
 client_addr * clients[40];
 
-char server_initialised;
-char server_shouldQuit;
-char server_shouldHost;
-char server_shouldTerminate;
+char volatile _Atomic server_initialised;
+char volatile  _Atomic server_shouldQuit;
+char volatile _Atomic server_shouldHost;
+char volatile _Atomic server_shouldTerminate;
 
 int server_connfd;
 int server_listenfd;

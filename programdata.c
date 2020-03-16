@@ -26,4 +26,6 @@ GtkWidget * program_connectItem = NULL;
 GtkWidget * program_disconnectItem = NULL;
 GtkWidget * program_hostItem = NULL;
 
+GtkTextBuffer * program_mainTextBuffer = NULL;
+
 address_package program_connection = {.IP1 = 192, .IP2 = 168, .IP3 = 1, .IP4 = 1};

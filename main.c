@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
 		server_serverCleanup();
 	}
 	else{
+		client_init();
 		setupMainWindow("SimpleChat", &argc, &argv, 1);
 		program_clientLoopIdentifier = g_timeout_add(0, client_clientLoop, NULL);
 		gtk_main();

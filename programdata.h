@@ -42,6 +42,7 @@ extern bool program_changedNickname;
 extern GtkWidget * program_statusLabel;
 extern GtkWidget * program_nicknameDialog;
 extern GtkWidget * program_connectDialog;
+extern GtkTextBuffer * program_mainTextBuffer;
 
 
 #endif
