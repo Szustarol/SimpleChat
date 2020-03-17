@@ -20,7 +20,7 @@ typedef struct{
 client_addr * clients[40];
 
 char volatile _Atomic server_initialised;
-char volatile  _Atomic server_shouldQuit;
+char volatile _Atomic server_shouldQuit;
 char volatile _Atomic server_shouldHost;
 char volatile _Atomic server_shouldTerminate;
 

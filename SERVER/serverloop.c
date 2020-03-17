@@ -30,11 +30,11 @@ void server_serverInit(){
 	server_addr.sin_port = htons(6660);
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	errno = 0;
-	int retb = bind(server_listenfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+	bind(server_listenfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
 
 	printf("Bind return: %d\n", errno);
 
-	retb = listen(server_listenfd, 10);
+	listen(server_listenfd, 10);
 
 	printf("Listen return: %d\n", errno);
 
@@ -43,7 +43,7 @@ void server_serverInit(){
 
 void server_sendAll(char * message){
 	pthread_mutex_lock(&clientsmutex);
-	int messagelen = strlen(message) + 1;
+	int messagelen = strlen(message);
 	for(int i = 0; i < MAX_CONNECTIONS; i++){
 		//try writing three times
 		if(clients[i] == 0) continue;
@@ -66,19 +66,18 @@ void * server_parseClient(void * clientStruct){
 	message[MSG_MAXLEN] = 0;
 
 	while( terminate_clients == 0 && (message_len = read(client->connfd, message, MSG_MAXLEN)) > 0){
-		puts(message);
-		puts("Before-sendall");
 		message[message_len] = 0x0;
 		server_sendAll(message);
-		puts("After - sendall");
 	}
-
 	
 	close(client->connfd);
 	pthread_mutex_lock(&clientsmutex);
 	for(int i = 0; i < MAX_CONNECTIONS; i++)
-		if(clients[i] == client)
+		if(clients[i] == client){
 			free(clients[i]);
+			clients[i] = 0x0;
+			break;
+		}
 	pthread_mutex_unlock(&clientsmutex);
 	server_clientCount--;
 
@@ -127,18 +126,43 @@ void server_serverLoop(){
 				pthread_create(&threadid, NULL, &server_parseClient, (void*)c);
 			}
 		}
-
 		if(server_initialised && server_shouldQuit){
+			char * quitstr = "Server is closing.\n\0";
+			server_sendAll(quitstr);
+			usleep(100);
+			server_initialised = 0;
+			terminate_clients = 1;
 			close(server_listenfd);
-			server_serverCleanup();
+			server_shouldQuit = 0;
+			//server_serverCleanup();
 		}
-
+		if(terminate_clients){
+			if(server_clientCount == 0)
+				terminate_clients = 0;
+		}
+	}
+	//in case termiation signal is fired while loop is in progress
+	if(server_initialised && server_shouldQuit){
+		char * quitstr = "Server is closing.\n\0";
+		server_sendAll(quitstr);
+		usleep(100);
+		server_initialised = 0;
+		terminate_clients = 1;
+		close(server_listenfd);
+		server_shouldQuit = 0;
+		//server_serverCleanup();
+	}
+	if(terminate_clients){
+		if(server_clientCount == 0)
+			terminate_clients = 0;
 	}
 }
 
 void server_serverCleanup(){
 	for(int i = 0; i < MAX_CONNECTIONS; i++){
-		if(clients[i] != 0x0)
+		if(clients[i] != 0x0){
 			free(clients[i]);
+			clients[i] = 0x0;
+		}
 	}
 }

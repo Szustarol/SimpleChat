@@ -13,6 +13,8 @@ typedef struct{
 	GtkWidget * IP1;
 }program_connectionData;
 
+void program_connectionDataToNumeric(void * dest);
+
 typedef struct{
 	uint8_t IP4;
 	uint8_t IP3;
@@ -20,8 +22,10 @@ typedef struct{
 	uint8_t IP1;
 }address_package;
 
+#define BUFFER_LEN 512+64
 static const int MSG_MAXLEN = 512;
 
+extern char program_inputBuffer[BUFFER_LEN];
 extern pid_t program_childPID;
 extern bool program_isServer;
 extern bool program_isHosting;

@@ -7,14 +7,15 @@
 #include "communicate.h"
 
 int main(int argc, char *argv[]) {
-	struct sigaction s;
-	sigemptyset(&s.sa_mask);
-	s.sa_flags = 0;
-	s.sa_handler = server_incomingSignal;
-	sigaction(SIGUSR1, &s, NULL);
-
 	program_childPID = fork();
-	if(program_childPID){
+	if(program_childPID == 0){
+		struct sigaction s;
+		sigemptyset(&s.sa_mask);
+		s.sa_flags = 0;
+		s.sa_handler = server_incomingSignal;
+		sigaction(SIGUSR1, &s, NULL);
+		sigaction(SIGUSR2, &s, NULL);
+		sigaction(SIGTERM, &s, NULL);
 		server_serverLoop();
 		server_serverCleanup();
 	}

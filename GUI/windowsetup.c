@@ -35,6 +35,11 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	GtkWidget * inputAreaFrame = gtk_frame_new(NULL);
 	GtkWidget * inputAreaBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+	gtk_entry_set_max_length(
+		GTK_ENTRY(inputArea),
+		MSG_MAXLEN-4
+	);
+
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(mainArea), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(mainArea), GTK_WRAP_WORD);
 	gtk_container_set_border_width(GTK_CONTAINER(mainAreaWindow), 20);
@@ -85,6 +90,7 @@ GtkWidget * setupMainWindow(const char * windowName, int * argc, char *** argv, 
 	program_disconnectItem = disconnect_item;
 	g_signal_connect(G_OBJECT(host_item), "clicked", G_CALLBACK(hostHandler), NULL);
 	g_signal_connect(G_OBJECT(disconnect_item), "clicked", G_CALLBACK(disconnectHandler), NULL);
+	g_signal_connect(G_OBJECT(inputArea), "activate", G_CALLBACK(textEnteredHandler), NULL);
 	return mainWindow;
 }
 

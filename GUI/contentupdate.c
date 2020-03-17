@@ -24,6 +24,7 @@ void contentAppendText(char * text){
 }
 
 void setConnected(char connected){
+	updateStatusLabel(connected);
 	if(connected == TRUE){
 		gtk_widget_set_sensitive(program_disconnectItem, TRUE);
 		gtk_widget_set_sensitive(program_connectItem, FALSE);

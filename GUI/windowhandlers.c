@@ -82,3 +82,26 @@ void numberOnlyInsertionHandler(GtkEntry * widget, const gchar * text, gint leng
 	}
 	g_signal_stop_emission_by_name(G_OBJECT(widget), "insert_text");
 }
+
+void textEnteredHandler(GtkWidget * widget, gpointer data){
+	const char * cpbf =
+		gtk_entry_buffer_get_text(
+			gtk_entry_get_buffer(
+				GTK_ENTRY(widget)
+			)
+		);
+
+	int l = strlen(cpbf);
+
+	memcpy(program_inputBuffer,
+		cpbf,
+		l
+	);
+	gtk_entry_buffer_delete_text(
+		gtk_entry_get_buffer(GTK_ENTRY(widget)),
+		0,
+		-1
+	);
+	program_inputBuffer[l] = '\n';
+	program_inputBuffer[l+1] = 0x0;
+}
