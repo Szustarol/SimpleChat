@@ -11,7 +11,7 @@ struct sockaddr_in client_connaddr;
 
 
 gint client_clientLoop(gpointer data);
-void client_init();
+void client_init(void);
 
 struct timeval client_wait;
 fd_set client_descset;

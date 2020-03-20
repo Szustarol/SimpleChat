@@ -21,7 +21,7 @@ struct sockaddr_in incoming_addr;
 struct timeval server_wait = {.tv_sec = 0, .tv_usec = 400};
 fd_set server_descset;
 
-void server_serverInit(){
+void server_serverInit(void){
 	memset(clients, 0x0, sizeof(client_addr*)*MAX_CONNECTIONS);
 	server_initialised = 1;
 	server_listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,7 +85,7 @@ void * server_parseClient(void * clientStruct){
 	return NULL;
 }
 
-void server_serverLoop(){
+void server_serverLoop(void){
 	while(server_shouldTerminate == 0){
 		if(server_shouldHost){
 			server_shouldHost = 0;
@@ -158,7 +158,7 @@ void server_serverLoop(){
 	}
 }
 
-void server_serverCleanup(){
+void server_serverCleanup(void){
 	for(int i = 0; i < MAX_CONNECTIONS; i++){
 		if(clients[i] != 0x0){
 			free(clients[i]);

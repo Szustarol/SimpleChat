@@ -7,6 +7,8 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
+#define UNUSED(x) (void)(x)
+
 int client_sockfd = -1;
 
 struct timeval client_wait;
@@ -14,7 +16,7 @@ fd_set client_descset;
 
 struct sockaddr_in client_connaddr;
 
-void client_init(){
+void client_init(void){
 	client_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	client_connaddr.sin_family = AF_INET;
@@ -29,6 +31,7 @@ void client_init(){
 }
 
 gint client_clientLoop(gpointer data){
+	UNUSED(data);
 	while(gtk_events_pending())
 		gtk_main_iteration();
 

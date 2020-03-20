@@ -32,9 +32,9 @@ struct sockaddr_in incoming_addr;
 struct timeval server_wait;
 fd_set server_descset;
 
-void server_serverInit();
-void server_serverLoop();
-void server_serverCleanup();
+void server_serverInit(void);
+void server_serverLoop(void);
+void server_serverCleanup(void);
 void server_sendAll(char * message);
 void * server_parseClient(void * clientStruct);
 

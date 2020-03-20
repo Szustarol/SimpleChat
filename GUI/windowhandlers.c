@@ -1,12 +1,17 @@
 #include "windowhandlers.h"
 #include "../programdata.h"
+#define UNUSED(x) (void)(x)
 
 void nicknameChangeHandler(GtkWidget * widget, gpointer data){
+	UNUSED(widget);
+	UNUSED(data);
 	gtk_widget_show_all(program_nicknameDialog);
 	gtk_dialog_run(GTK_DIALOG(program_nicknameDialog));
 }
 
 void hostHandler(GtkWidget * widget, gpointer data){
+	UNUSED(widget);
+	UNUSED(data);
 	if(program_shouldDisconnect != TRUE)
 		program_shouldHost = TRUE;
 }
@@ -53,10 +58,14 @@ void connectionDoneHandler(GtkWidget * widget, gint response_id, gpointer data){
 }
 
 void disconnectHandler(GtkWidget * widget, gpointer data){
+	UNUSED(widget);
+	UNUSED(data);
 	program_shouldDisconnect = TRUE;
 }
 
 void connectHandler(GtkWidget * widget, gpointer data){
+	UNUSED(widget);
+	UNUSED(data);
 	if(program_shouldDisconnect != TRUE){
 		gtk_widget_show_all(program_connectDialog);
 		gtk_dialog_run(GTK_DIALOG(program_connectDialog));
@@ -64,12 +73,14 @@ void connectHandler(GtkWidget * widget, gpointer data){
 }
 
 void quitHandler(GtkWidget * widget, gpointer data){
+	UNUSED(widget);
+	UNUSED(data);
 	program_shouldHalt = TRUE;
 }
 
 void numberOnlyInsertionHandler(GtkEntry * widget, const gchar * text, gint length, gint * position, gpointer data){
 	char foundflag = FALSE;
-	for(unsigned i = 0; i < length; i++){
+	for(int i = 0; i < length; i++){
 		if(text[i] < '0' || text[i] > '9'){
 			foundflag = TRUE;
 			break;
@@ -84,6 +95,7 @@ void numberOnlyInsertionHandler(GtkEntry * widget, const gchar * text, gint leng
 }
 
 void textEnteredHandler(GtkWidget * widget, gpointer data){
+	UNUSED(data);
 	const char * cpbf =
 		gtk_entry_buffer_get_text(
 			gtk_entry_get_buffer(
