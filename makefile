@@ -3,6 +3,11 @@ CFLAGS=-Wall -Wextra -Werror `pkg-config --cflags gtk+-3.0` -g
 CLIBS=`pkg-config --libs gtk+-3.0` -lX11 -lpthread
 BD=build/
 
+run: compile
+	./simplechat.run
+
+compile: simplechat.run
+
 simplechat.run: $(BD)main.o
 	$(CC) $(CFLAGS) $(BD)*.o -o simplechat.run $(CLIBS)
 
