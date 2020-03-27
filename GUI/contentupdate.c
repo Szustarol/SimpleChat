@@ -6,7 +6,8 @@ void updateStatusLabel(char connected){
 	static char * con = "Connected";
 	static char * dcon = "Disconnected";
 	char * src;
-	if(connected) src = con;
+	if(connected)
+		src = con;
 	else src = dcon;
 	sprintf(buffer, "<span color='green'>Nickname: %s, %s</span>", program_nickname, src);
 	gtk_label_set_markup(GTK_LABEL(program_statusLabel), buffer);

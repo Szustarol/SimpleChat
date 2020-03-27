@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdint.h>
-#define bool char
+#include <stdbool.h>
 
 typedef struct{
 	GtkWidget * IP4;
@@ -13,8 +13,6 @@ typedef struct{
 	GtkWidget * IP1;
 }program_connectionData;
 
-void program_connectionDataToNumeric(void * dest);
-
 typedef struct{
 	uint8_t IP4;
 	uint8_t IP3;
@@ -22,31 +20,43 @@ typedef struct{
 	uint8_t IP1;
 }address_package;
 
+void program_connectionDataToNumeric(void * dest);
+
 #define BUFFER_LEN 512+64
 static const int MSG_MAXLEN = 512;
+static const int SERVER_PORTNUM = 6660; //IRC PORT
 
-extern char program_inputBuffer[BUFFER_LEN];
-extern pid_t program_childPID;
+//program state variables
+extern bool program_connected;
+extern bool program_changedNickname;
 extern bool program_isServer;
 extern bool program_isHosting;
-extern GtkWidget * program_connectItem;
-extern GtkWidget * program_disconnectItem;
-extern GtkWidget * program_hostItem;
-extern int	program_clientLoopIdentifier;
-extern address_package program_connection;
-extern char program_nickname[64];
-extern char program_lastnickname[64];
+
+//program operational flags
 extern bool program_shouldSendMessage;
 extern bool program_shouldConnect;
 extern bool program_shouldDisconnect;
 extern bool program_shouldHost;
 extern bool program_shouldHalt;
-extern bool program_connected;
-extern bool program_changedNickname;
+
+//cross-thread communcation data
+extern int	program_clientLoopIdentifier;
+extern pid_t program_childPID;
+
+
+//gtk items
+extern GtkWidget * program_connectItem;
+extern GtkWidget * program_disconnectItem;
+extern GtkWidget * program_hostItem;
 extern GtkWidget * program_statusLabel;
 extern GtkWidget * program_nicknameDialog;
 extern GtkWidget * program_connectDialog;
-extern GtkTextBuffer * program_mainTextBuffer;
 
+//buffers
+extern char program_inputBuffer[BUFFER_LEN];
+extern char program_nickname[64];
+extern char program_lastnickname[64];
+extern address_package program_connection;
+extern GtkTextBuffer * program_mainTextBuffer;
 
 #endif

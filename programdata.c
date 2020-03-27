@@ -3,36 +3,35 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define bool char
-
-char program_inputBuffer[BUFFER_LEN];
-char program_lastnickname[64];
-char program_nickname[64] = "User";
-bool program_shouldSendMessage = FALSE;
 bool program_connected = FALSE;
-bool program_shouldConnect = FALSE;
 bool program_changedNickname = TRUE;
+bool program_isServer = FALSE;
+bool program_isHosting = FALSE;
+
+bool program_shouldSendMessage = FALSE;
+bool program_shouldConnect = FALSE;
 bool program_shouldDisconnect = FALSE;
 bool program_shouldHost = FALSE;
 bool program_shouldHalt = FALSE;
-bool program_isHosting = FALSE;
-bool program_isServer = FALSE;
-pid_t program_childPID;
 
 int program_clientLoopIdentifier;
+pid_t program_childPID;
+
 
 GtkWidget * program_nicknameDialog;
 GtkWidget * program_connectDialog;
-
 GtkWidget * program_statusLabel = NULL;
-
 GtkWidget * program_connectItem = NULL;
 GtkWidget * program_disconnectItem = NULL;
 GtkWidget * program_hostItem = NULL;
 
-GtkTextBuffer * program_mainTextBuffer = NULL;
 
+char program_inputBuffer[BUFFER_LEN];
+char program_lastnickname[64];
+char program_nickname[64] = "User";
+GtkTextBuffer * program_mainTextBuffer = NULL;
 address_package program_connection = {.IP1 = 192, .IP2 = 168, .IP3 = 1, .IP4 = 1};
+
 
 void program_connectionDataToNumeric(void * dest){
     struct sockaddr_in * target = (struct sockaddr_in *)dest;

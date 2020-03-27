@@ -14,12 +14,12 @@ char volatile _Atomic server_initialised = 0;
 char volatile _Atomic server_shouldTerminate = 0;
 int _Atomic server_clientCount = 0;
 char _Atomic terminate_clients = 0;
-int server_connfd = -1;
-int server_listenfd = -1;
-struct sockaddr_in server_addr;
-struct sockaddr_in incoming_addr;
-struct timeval server_wait = {.tv_sec = 0, .tv_usec = 400};
-fd_set server_descset;
+static int server_connfd = -1;
+static int server_listenfd = -1;
+static struct sockaddr_in server_addr;
+static struct sockaddr_in incoming_addr;
+static struct timeval server_wait = {.tv_sec = 0, .tv_usec = 400};
+static fd_set server_descset;
 
 void server_serverInit(void){
 	memset(clients, 0x0, sizeof(client_addr*)*MAX_CONNECTIONS);
@@ -27,7 +27,7 @@ void server_serverInit(void){
 	server_listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(6660);
+	server_addr.sin_port = htons(SERVER_PORTNUM);
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	errno = 0;
 	bind(server_listenfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
@@ -93,10 +93,7 @@ void server_serverLoop(void){
 			server_initialised = 1;
 		}
 		if(server_initialised && !server_shouldQuit){
-			FD_ZERO(&server_descset);
-			FD_SET(server_listenfd, &server_descset);
-
-			int r = select(server_listenfd + 1, &server_descset, NULL, NULL, &server_wait);
+			int r = server_waitFd(server_listenfd);
 			if(r > 0){
 				puts("incoming connection");
 				socklen_t client_len = sizeof(incoming_addr);
@@ -127,14 +124,7 @@ void server_serverLoop(void){
 			}
 		}
 		if(server_initialised && server_shouldQuit){
-			char * quitstr = "Server is closing.\n\0";
-			server_sendAll(quitstr);
-			usleep(100);
-			server_initialised = 0;
-			terminate_clients = 1;
-			close(server_listenfd);
-			server_shouldQuit = 0;
-			//server_serverCleanup();
+			server_serverCleanup();
 		}
 		if(terminate_clients){
 			if(server_clientCount == 0)
@@ -143,14 +133,7 @@ void server_serverLoop(void){
 	}
 	//in case termiation signal is fired while loop is in progress
 	if(server_initialised && server_shouldQuit){
-		char * quitstr = "Server is closing.\n\0";
-		server_sendAll(quitstr);
-		usleep(100);
-		server_initialised = 0;
-		terminate_clients = 1;
-		close(server_listenfd);
-		server_shouldQuit = 0;
-		//server_serverCleanup();
+		server_serverCleanup();
 	}
 	if(terminate_clients){
 		if(server_clientCount == 0)
@@ -158,11 +141,19 @@ void server_serverLoop(void){
 	}
 }
 
+int server_waitFd(int fd){
+	FD_ZERO(&server_descset);
+	FD_SET(fd, &server_descset);
+	
+	return select(fd + 1, &server_descset, NULL, NULL, &server_wait);
+}
+
 void server_serverCleanup(void){
-	for(int i = 0; i < MAX_CONNECTIONS; i++){
-		if(clients[i] != 0x0){
-			free(clients[i]);
-			clients[i] = 0x0;
-		}
-	}
+	char * quitstr = "Server is closing.\n\0";
+	server_sendAll(quitstr);
+	usleep(100);
+	server_initialised = 0;
+	terminate_clients = 1;
+	close(server_listenfd);
+	server_shouldQuit = 0;
 }

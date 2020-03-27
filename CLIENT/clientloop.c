@@ -20,7 +20,7 @@ void client_init(void){
 	client_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	client_connaddr.sin_family = AF_INET;
-	client_connaddr.sin_port = htons(6660);
+	client_connaddr.sin_port = htons(SERVER_PORTNUM);
 	inet_pton(AF_INET, "127.0.0.1", &(client_connaddr.sin_addr));
 
 
